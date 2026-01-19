@@ -12,6 +12,6 @@ RUN apt-get update && \
     chown -R www-data:www-data /var/www/html && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
-COPY conf/nginx.conf /etc/nginx/sites-enabled/default
+COPY conf/nginx.conf /etc/nginx/nginx.conf
 
 CMD [ "nginx", "-g", "daemon off;" ]
