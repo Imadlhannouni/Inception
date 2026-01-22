@@ -1,44 +1,58 @@
 services:
   mariadb:
-    container_name: mariadb
+    image: requirements/mariadb
     networks:
       - 'Inception'
     build:
-      context: requirements/mariadb
+      context: .
     env_file: .env
     volumes:
-      - /home/ilhannou/data/mariadb:/var/lib/mysql
+      - mariadb
     restart: unless-stopped
     expose:
       - '3306'
   nginx:
-    container_name: nginx
+    image: requirements/nginx
     networks:
       - 'Inception'
     depends_on:
       - 'wordpress'
     build:
-      context: requirements/nginx
+      context: .
     env_file: .env
     volumes:
-      - /home/ilhannou/data/wordpress:/var/www/wordpress
+      - wordpress
     ports:
-      - "8443:443"
+      - "443:443"
     restart: on-failure
   wordpress:
-    container_name: wordpress
+    image: requirements/wordpress
     networks:
       - 'Inception'
     depends_on:
       - 'mariadb'
     build:
-      context: requirements/wordpress
+      context: .
     env_file: .env
     volumes:
-      - /home/ilhannou/data/wordpress:/var/www/wordpress
+      - wordpress
     expose:
       - '9000'
     restart: on-failure
+
+volumes:
+  wordpress:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: '/home/ilhannou/data/wordpress'
+  mariadb:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: '/home/ilhannou/data/mariadb'
 
 networks:
   Inception:
