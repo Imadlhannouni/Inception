@@ -4,11 +4,6 @@ mkdir -p /var/run/mysqld
 chown -R mysql:mysql /var/run/mysqld
 chown -R mysql:mysql /var/lib/mysql
 
-if [ ! -d "/var/lib/mysql/mysql" ]; then
-    echo "Initialisation du répertoire de données MariaDB..."
-    mysql_install_db --user=mysql --datadir=/var/lib/mysql
-fi
-
 cat << EOF > /tmp/init_db.sql
 FLUSH PRIVILEGES;
 CREATE DATABASE IF NOT EXISTS \`${SQL_DATABASE}\`;
