@@ -11,6 +11,8 @@ cd /var/www/wordpress
 
 # ÉTAPE MANQUANTE : Télécharger les fichiers si le dossier est vide
 if [ ! -f wp-config.php ]; then
+  echo "📥 Downloading WordPress core..."
+  wp core download --allow-root
 
   echo "⚙️ Creating wp-config.php..."
   wp config create \

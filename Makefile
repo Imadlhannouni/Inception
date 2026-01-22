@@ -3,7 +3,7 @@ USER = $(shell whoami)
 
 # Chemins
 DATA_PATH = /home/$(USER)/data
-DOCKER_COMPOSE = docker-compose -f ./srcs/docker-compose.yml
+DOCKER_COMPOSE = docker compose -f ./srcs/docker-compose.yml
 
 # Cibles principales
 all: build
