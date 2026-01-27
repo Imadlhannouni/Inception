@@ -32,8 +32,6 @@ services:
     volumes:
       - wordpress:/var/www/wordpress
     restart: unless-stopped
-  redis:
-    image: 
 
 volumes:
   wordpress:
