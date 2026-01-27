@@ -1,22 +1,18 @@
+name: Inception
+
 services:
   mariadb:
-    image: mariadb
-    build:
-      context: ./requirements/mariadb
+    build: ./requirements/mariadb
     networks:
-      - 'Inception'
+      - 'Back'
     env_file: .env
     volumes:
       - mariadb:/var/lib/mysql
     restart: unless-stopped
-    expose:
-      - '3306'
   nginx:
-    image: nginx
-    build:
-      context: ./requirements/nginx
+    build: ./requirements/nginx
     networks:
-      - 'Inception'
+      - 'Front'
     depends_on:
       - 'wordpress'
     env_file: .env
@@ -24,21 +20,20 @@ services:
       - wordpress:/var/www/wordpress
     ports:
       - "443:443"
-    restart: on-failure
+    restart: unless-stopped
   wordpress:
-    image: wordpress
-    build:
-      context: ./requirements/wordpress
+    build: ./requirements/wordpress
     networks:
-      - 'Inception'
+      - 'Back'
+      - 'Front'
     depends_on:
       - 'mariadb'
     env_file: .env
     volumes:
       - wordpress:/var/www/wordpress
-    expose:
-      - '9000'
-    restart: on-failure
+    restart: unless-stopped
+  redis:
+    image: 
 
 volumes:
   wordpress:
@@ -55,5 +50,7 @@ volumes:
       device: '/home/${USER}/data/mariadb'
 
 networks:
-  Inception:
+  Back:
+    driver: bridge
+  Front:
     driver: bridge

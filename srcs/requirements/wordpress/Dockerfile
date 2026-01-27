@@ -16,6 +16,8 @@ RUN chmod +x /usr/local/bin/auto_config.sh
 
 WORKDIR /var/www/wordpress
 
+EXPOSE 9000
+
 ENTRYPOINT ["/usr/local/bin/auto_config.sh"]
 
 CMD ["php-fpm8.2", "-F"]

@@ -1,11 +1,8 @@
-# Nom de l'utilisateur (utilisé pour les volumes)
 USER = $(shell whoami)
 
-# Chemins
 DATA_PATH = /home/$(USER)/data
 DOCKER_COMPOSE = docker compose -f ./srcs/docker-compose.yml
 
-# Cibles principales
 all: build
 
 build: setup
@@ -31,7 +28,6 @@ down:
 
 re: fclean all
 
-# Nettoyage complet
 clean:
 	@echo "Nettoyage des conteneurs et réseaux..."
 	$(DOCKER_COMPOSE) down --rmi all --volumes
