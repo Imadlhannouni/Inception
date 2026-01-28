@@ -36,6 +36,16 @@ if [ ! -f wp-config.php ]; then
     --role=author \
     --user_pass="$WP_USER_PASSWORD" \
     --allow-root
+
+  echo "🧠 Configuring Redis..."
+  wp config set WP_REDIS_HOST redis --allow-root
+  wp config set WP_REDIS_PORT 6379 --raw --allow-root
+
+  echo "📦 Installing Redis Object Cache plugin..."
+  wp plugin install redis-cache --activate --allow-root
+
+  echo "⚡ Enabling Redis cache..."
+  wp redis enable --allow-root
 fi
 
 # S'assurer que les permissions sont correctes pour php-fpm

@@ -3,6 +3,7 @@ name: Inception
 services:
   mariadb:
     build: ./requirements/mariadb
+    container_name: mariadb
     networks:
       - 'Back'
     env_file: .env
@@ -11,6 +12,7 @@ services:
     restart: unless-stopped
   nginx:
     build: ./requirements/nginx
+    container_name: nginx
     networks:
       - 'Front'
     depends_on:
@@ -23,6 +25,7 @@ services:
     restart: unless-stopped
   wordpress:
     build: ./requirements/wordpress
+    container_name: wordpress
     networks:
       - 'Back'
       - 'Front'
@@ -32,7 +35,45 @@ services:
     volumes:
       - wordpress:/var/www/wordpress
     restart: unless-stopped
-
+  redis:
+    build: ./requirements/bonus/redis
+    container_name: redis
+    networks:
+      - 'Back'
+    restart: unless-stopped
+  vsftpd:
+    build: ./requirements/bonus/ftp
+    container_name: vsftpd
+    networks:
+      - 'Back'
+    volumes:
+      - wordpress:/var/www/wordpress
+    restart: unless-stopped
+  website:
+    build: ./requirements/bonus/website
+    container_name: static_website
+    ports:
+      - "8081:80"
+  adminer:
+    build: ./requirements/bonus/adminer
+    container_name: adminer
+    networks:
+      - 'Back'
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+  portainer:
+    build: ./requirements/bonus/portainer
+    container_name: portainer
+    restart: always
+    environment:
+      - DOCKER_API_VERSION=1.42
+    ports:
+      - "9443:9443"
+      - "9000:9000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/var/lib/portainer
 volumes:
   wordpress:
     driver: local
@@ -46,6 +87,7 @@ volumes:
       type: 'none'
       o: 'bind'
       device: '/home/${USER}/data/mariadb'
+  portainer_data:
 
 networks:
   Back:
