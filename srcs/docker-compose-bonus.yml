@@ -1,0 +1,48 @@
+name: Inception
+
+services:
+  redis:
+    build: ./requirements/bonus/redis
+    container_name: redis
+    networks:
+      - "Back"
+    restart: unless-stopped
+  vsftpd:
+    build: ./requirements/bonus/ftp
+    container_name: vsftpd
+    networks:
+      - "Back"
+    volumes:
+      - wordpress:/var/www/wordpress
+    restart: unless-stopped
+  website:
+    build: ./requirements/bonus/website
+    container_name: static_website
+    ports:
+      - "8081:80"
+  adminer:
+    build: ./requirements/bonus/adminer
+    container_name: adminer
+    networks:
+      - "Back"
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+  portainer:
+    build: ./requirements/bonus/portainer
+    container_name: portainer
+    restart: always
+    environment:
+      - DOCKER_API_VERSION=1.42
+    ports:
+      - "9443:9443"
+      - "9000:9000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/var/lib/portainer
+volumes:
+  portainer_data:
+
+networks:
+  Back:
+    driver: bridge

@@ -9,6 +9,9 @@ build: setup
 	@echo "Lancement du build des conteneurs..."
 	$(DOCKER_COMPOSE) up --build -d
 
+bonus: build
+	docker compose -f docker-compose-bonus.yml up --build -d
+
 setup:
 	@echo "Préparation des dossiers de données..."
 	@mkdir -p $(DATA_PATH)/mariadb
