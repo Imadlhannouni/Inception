@@ -5,7 +5,7 @@ services:
     build: ./requirements/mariadb
     container_name: mariadb
     networks:
-      - "Back"
+      - 'Back'
     env_file: .env
     volumes:
       - mariadb:/var/lib/mysql
@@ -14,9 +14,9 @@ services:
     build: ./requirements/nginx
     container_name: nginx
     networks:
-      - "Front"
+      - 'Front'
     depends_on:
-      - "wordpress"
+      - 'wordpress'
     env_file: .env
     volumes:
       - wordpress:/var/www/wordpress
@@ -27,28 +27,67 @@ services:
     build: ./requirements/wordpress
     container_name: wordpress
     networks:
-      - "Back"
-      - "Front"
+      - 'Back'
+      - 'Front'
     depends_on:
-      - "mariadb"
+      - 'mariadb'
     env_file: .env
     volumes:
       - wordpress:/var/www/wordpress
     restart: unless-stopped
-
+  redis:
+    build: ./requirements/bonus/redis
+    container_name: redis
+    networks:
+      - 'Back'
+    restart: unless-stopped
+  vsftpd:
+    build: ./requirements/bonus/ftp
+    container_name: vsftpd
+    networks:
+      - 'Back'
+    volumes:
+      - wordpress:/var/www/wordpress
+    restart: unless-stopped
+  website:
+    build: ./requirements/bonus/website
+    container_name: static_website
+    ports:
+      - "8081:80"
+  adminer:
+    build: ./requirements/bonus/adminer
+    container_name: adminer
+    networks:
+      - 'Back'
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+  portainer:
+    build: ./requirements/bonus/portainer
+    container_name: portainer
+    restart: always
+    environment:
+      - DOCKER_API_VERSION=1.42
+    ports:
+      - "9443:9443"
+      - "9000:9000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/var/lib/portainer
 volumes:
   wordpress:
     driver: local
     driver_opts:
-      type: "none"
-      o: "bind"
-      device: "/home/${USER}/data/wordpress"
+      type: 'none'
+      o: 'bind'
+      device: '/home/${USER}/data/wordpress'
   mariadb:
     driver: local
     driver_opts:
-      type: "none"
-      o: "bind"
-      device: "/home/${USER}/data/mariadb"
+      type: 'none'
+      o: 'bind'
+      device: '/home/${USER}/data/mariadb'
+  portainer_data:
 
 networks:
   Back:
